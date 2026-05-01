@@ -4,6 +4,7 @@ import { getSupabaseClient } from '../lib/supabase';
 export default function Settings() {
   const [categories, setCategories] = useState<any[]>([]);
   const [newCatName, setNewCatName] = useState('');
+  const [newCatIcon, setNewCatIcon] = useState('');
   const [loading, setLoading] = useState(false);
 
   const fetchCategories = async () => {
@@ -24,7 +25,10 @@ export default function Settings() {
     const supabase = getSupabaseClient();
     if (!supabase) return;
 
-    const { error } = await supabase.from('video_categories').insert([{ name: newCatName.trim() }]);
+    const { error } = await supabase.from('video_categories').insert([{ 
+      name: newCatName.trim(),
+      icon: newCatIcon.trim() || '📁'
+    }]);
     if (error) {
       alert("新增失敗：" + error.message);
     } else {
@@ -61,6 +65,14 @@ export default function Settings() {
         <form onSubmit={handleAddCategory} className="flex gap-2 mb-6">
           <input 
             type="text" 
+            placeholder="圖示 (Emoji 例如：🐶)" 
+            className="w-24 bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-blue-500 text-center"
+            value={newCatIcon} 
+            maxLength={2}
+            onChange={e => setNewCatIcon(e.target.value)}
+          />
+          <input 
+            type="text" 
             placeholder="輸入新分類名稱 (例如：寵物)..." 
             className="flex-1 bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-blue-500"
             value={newCatName} 
@@ -79,7 +91,11 @@ export default function Settings() {
           {categories.map(cat => (
             <div key={cat.id} className="flex justify-between items-center bg-slate-900 p-4 rounded-xl border border-slate-700">
               <div className="flex items-center gap-3 text-slate-200">
-                <i className={`${cat.icon} text-slate-400 w-5 text-center`}></i>
+                {cat.icon?.startsWith('fa-') ? (
+                  <i className={`${cat.icon} text-slate-400 w-5 text-center`}></i>
+                ) : (
+                  <span className="text-slate-400 w-5 text-center">{cat.icon || '📁'}</span>
+                )}
                 <span className="font-bold">{cat.name}</span>
               </div>
               <button 

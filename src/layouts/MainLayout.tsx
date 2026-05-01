@@ -81,7 +81,11 @@ export default function MainLayout() {
                 }`
               }
             >
-              <i className={`${link.icon} w-5 text-center text-lg`}></i>
+              {link.icon?.startsWith('fa-') ? (
+                <i className={`${link.icon} w-5 text-center text-lg`}></i>
+              ) : (
+                <span className="w-5 text-center text-lg">{link.icon || '📁'}</span>
+              )}
               {link.name}
             </NavLink>
           ))}
@@ -129,7 +133,11 @@ export default function MainLayout() {
           >
             {({ isActive }) => (
               <>
-                <i className={`${link.icon} text-xl mb-1 ${isActive ? 'drop-shadow-[0_0_8px_rgba(96,165,250,0.5)]' : ''}`}></i>
+                {link.icon?.startsWith('fa-') ? (
+                  <i className={`${link.icon} text-xl mb-1 ${isActive ? 'drop-shadow-[0_0_8px_rgba(96,165,250,0.5)]' : ''}`}></i>
+                ) : (
+                  <span className={`text-xl mb-1 ${isActive ? 'drop-shadow-[0_0_8px_rgba(96,165,250,0.5)]' : ''}`}>{link.icon || '📁'}</span>
+                )}
                 <span className="text-[10px] font-bold">{link.name}</span>
               </>
             )}
