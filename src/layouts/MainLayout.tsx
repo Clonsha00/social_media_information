@@ -111,8 +111,12 @@ export default function MainLayout() {
               }`
             }
           >
-            <i className={`${link.icon} text-xl mb-1 ${isActive ? 'drop-shadow-[0_0_8px_rgba(96,165,250,0.5)]' : ''}`}></i>
-            <span className="text-[10px] font-bold">{link.name}</span>
+            {({ isActive }) => (
+              <>
+                <i className={`${link.icon} text-xl mb-1 ${isActive ? 'drop-shadow-[0_0_8px_rgba(96,165,250,0.5)]' : ''}`}></i>
+                <span className="text-[10px] font-bold">{link.name}</span>
+              </>
+            )}
           </NavLink>
         ))}
       </nav>
