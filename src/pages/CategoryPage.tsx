@@ -3,15 +3,6 @@ import { useEffect, useState } from 'react';
 import { getSupabaseClient } from '../lib/supabase';
 import VideoCard from '../components/VideoCard';
 
-// Map english paths to tag names
-const tagMap: Record<string, string | null> = {
-  all: null,
-  recipe: '食譜',
-  travel: '旅遊',
-  planning: '人生規劃',
-  funny: '有趣',
-};
-
 export default function CategoryPage() {
   const { categoryName } = useParams();
   const [videos, setVideos] = useState<any[]>([]);
@@ -29,7 +20,7 @@ export default function CategoryPage() {
         return;
       }
 
-      const targetTag = categoryName && tagMap[categoryName];
+      const targetTag = categoryName === 'all' ? null : categoryName;
 
       try {
         let query = supabase.from('video_bookmarks').select('*').order('created_at', { ascending: false });
@@ -52,7 +43,7 @@ export default function CategoryPage() {
     fetchVideos();
   }, [categoryName]);
 
-  const title = categoryName === 'all' ? '所有影片' : (tagMap[categoryName || 'all'] || '未知分類');
+  const title = categoryName === 'all' ? '所有影片' : categoryName;
 
   return (
     <div className="p-8">

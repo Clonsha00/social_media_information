@@ -1,16 +1,32 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import AddVideoModal from '../components/AddVideoModal';
+import { getSupabaseClient } from '../lib/supabase';
 
 export default function MainLayout() {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [categories, setCategories] = useState<{ name: string, path: string, icon: string }[]>([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const supabase = getSupabaseClient();
+      if (!supabase) return;
+      const { data, error } = await supabase.from('video_categories').select('*').order('created_at', { ascending: true });
+      if (!error && data) {
+        const dynamicLinks = data.map(c => ({
+          name: c.name,
+          path: `/category/${c.name}`,
+          icon: c.icon || 'fa-solid fa-hashtag'
+        }));
+        setCategories(dynamicLinks);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const navLinks = [
     { name: '所有', path: '/category/all', icon: 'fa-solid fa-border-all' },
-    { name: '食譜', path: '/category/recipe', icon: 'fa-solid fa-utensils' },
-    { name: '旅遊', path: '/category/travel', icon: 'fa-solid fa-plane' },
-    { name: '規劃', path: '/category/planning', icon: 'fa-solid fa-bullseye' },
-    { name: '有趣', path: '/category/funny', icon: 'fa-solid fa-face-laugh-squint' },
+    ...categories
   ];
 
   return (
@@ -121,7 +137,7 @@ export default function MainLayout() {
         ))}
       </nav>
 
-      {isModalOpen && <AddVideoModal onClose={() => setIsModalOpen(false)} />}
+      {isModalOpen && <AddVideoModal onClose={() => setIsModalOpen(false)} availableTags={categories.map(c => c.name)} />}
     </div>
   );
 }

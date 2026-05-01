@@ -3,9 +3,10 @@ import { getSupabaseClient } from '../lib/supabase';
 
 interface AddVideoModalProps {
   onClose: () => void;
+  availableTags: string[];
 }
 
-export default function AddVideoModal({ onClose }: AddVideoModalProps) {
+export default function AddVideoModal({ onClose, availableTags }: AddVideoModalProps) {
   const [url, setUrl] = useState('');
   const [isAiThinking, setIsAiThinking] = useState(false);
   const [isManualMode, setIsManualMode] = useState(false);
@@ -13,8 +14,6 @@ export default function AddVideoModal({ onClose }: AddVideoModalProps) {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [statusMsg, setStatusMsg] = useState('');
   const [meta, setMeta] = useState<any>(null);
-
-  const availableTags = ['食譜', '旅遊', '規劃', '有趣', '學習'];
 
   const handleAnalyze = async () => {
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY || '';
