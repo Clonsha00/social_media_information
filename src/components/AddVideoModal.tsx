@@ -8,6 +8,7 @@ interface AddVideoModalProps {
 export default function AddVideoModal({ onClose }: AddVideoModalProps) {
   const [url, setUrl] = useState('');
   const [isAiThinking, setIsAiThinking] = useState(false);
+  const [isManualMode, setIsManualMode] = useState(false);
   const [highlight, setHighlight] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [statusMsg, setStatusMsg] = useState('');
@@ -96,31 +97,39 @@ export default function AddVideoModal({ onClose }: AddVideoModalProps) {
         </div>
         
         <div className="p-6 space-y-6">
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <input 
-              type="text" placeholder="貼上 IG/TikTok/YT 連結..." 
+              type="text" placeholder="貼上 IG/TikTok/YT/Threads 連結..." 
               className="flex-1 bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-blue-500"
               value={url} onChange={e => setUrl(e.target.value)}
             />
-            <button onClick={handleAnalyze} disabled={isAiThinking} className="bg-blue-600 hover:bg-blue-500 px-6 py-3 rounded-xl font-bold transition-all disabled:opacity-50">
-              {isAiThinking ? '分析中...' : 'Gemini 分析'}
-            </button>
+            <div className="flex gap-2 shrink-0">
+              <button onClick={handleAnalyze} disabled={isAiThinking || !url} className="bg-blue-600 hover:bg-blue-500 px-4 py-3 rounded-xl font-bold transition-all disabled:opacity-50 flex items-center gap-2">
+                {isAiThinking ? <i className="fa-solid fa-spinner fa-spin"></i> : <i className="fa-solid fa-wand-magic-sparkles"></i>}
+                <span className="hidden sm:inline">{isAiThinking ? '分析中' : 'AI 擷取'}</span>
+              </button>
+              <button onClick={() => setIsManualMode(true)} className="bg-slate-700 hover:bg-slate-600 px-4 py-3 rounded-xl font-bold transition-all flex items-center gap-2 text-slate-300">
+                <i className="fa-solid fa-pen"></i>
+                <span className="hidden sm:inline">手動輸入</span>
+              </button>
+            </div>
           </div>
 
-          {isAiThinking && <div className="ai-shimmer py-4 text-center">{statusMsg}</div>}
+          {isAiThinking && <div className="ai-shimmer py-4 text-center text-blue-400 font-medium">{statusMsg}</div>}
 
-          {!isAiThinking && highlight && (
+          {!isAiThinking && (highlight || isManualMode) && (
             <div className="space-y-4 animate-fade-in">
               <textarea 
-                className="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 text-slate-100 font-bold h-24"
+                placeholder="請輸入影片的一句話亮點..."
+                className="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 text-slate-100 font-bold h-24 focus:outline-none focus:border-blue-500"
                 value={highlight} onChange={e => setHighlight(e.target.value)}
               />
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 {availableTags.map(tag => (
                   <button 
                     key={tag}
                     onClick={() => setSelectedTags(prev => prev.includes(tag) ? prev.filter(t=>t!==tag) : [...prev, tag])}
-                    className={`px-3 py-1.5 rounded-full border text-sm ${selectedTags.includes(tag) ? 'bg-blue-500/20 text-blue-400 border-blue-500' : 'border-slate-600 text-slate-400'}`}
+                    className={`px-3 py-1.5 rounded-full border text-sm transition-all ${selectedTags.includes(tag) ? 'bg-blue-500/20 text-blue-400 border-blue-500 font-bold shadow-[0_0_10px_rgba(59,130,246,0.3)]' : 'border-slate-600 text-slate-400 hover:border-slate-400'}`}
                   >
                     #{tag}
                   </button>
@@ -130,9 +139,13 @@ export default function AddVideoModal({ onClose }: AddVideoModalProps) {
           )}
         </div>
         
-        {highlight && (
+        {(highlight || isManualMode) && (
           <div className="p-6 bg-slate-800/50 border-t border-slate-700">
-            <button onClick={handleSave} className="w-full bg-slate-100 hover:bg-white text-slate-900 font-bold py-3 rounded-xl shadow-lg transition-all">
+            <button 
+              onClick={handleSave} 
+              disabled={!url || !highlight}
+              className="w-full bg-slate-100 hover:bg-white text-slate-900 disabled:bg-slate-600 disabled:text-slate-400 font-bold py-3 rounded-xl shadow-lg transition-all"
+            >
               儲存至資料庫
             </button>
           </div>
