@@ -54,34 +54,36 @@ export default function Settings() {
   };
 
   return (
-    <div className="max-w-3xl p-8 space-y-8">
-      <h1 className="text-3xl font-bold text-slate-100">系統設定</h1>
+    <div className="max-w-3xl p-4 sm:p-8 space-y-8 pb-32">
+      <h1 className="text-2xl sm:text-3xl font-bold text-slate-100">系統設定</h1>
       
-      <div className="bg-slate-800 p-8 rounded-2xl border border-slate-700">
+      <div className="bg-slate-800 p-5 sm:p-8 rounded-2xl border border-slate-700">
         <h2 className="text-xl font-bold text-slate-100 mb-6 flex items-center gap-2">
           <i className="fa-solid fa-tags text-blue-400"></i> 分類管理
         </h2>
         
-        <form onSubmit={handleAddCategory} className="flex gap-2 mb-6">
-          <input 
-            type="text" 
-            placeholder="圖示 (Emoji 例如：🐶)" 
-            className="w-24 bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-blue-500 text-center"
-            value={newCatIcon} 
-            maxLength={2}
-            onChange={e => setNewCatIcon(e.target.value)}
-          />
-          <input 
-            type="text" 
-            placeholder="輸入新分類名稱 (例如：寵物)..." 
-            className="flex-1 bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-blue-500"
-            value={newCatName} 
-            onChange={e => setNewCatName(e.target.value)}
-          />
+        <form onSubmit={handleAddCategory} className="flex flex-col sm:flex-row gap-2 mb-6">
+          <div className="flex gap-2 flex-1">
+            <input 
+              type="text" 
+              placeholder="圖示(🐶)" 
+              className="w-16 sm:w-24 bg-slate-900 border border-slate-600 rounded-xl px-2 sm:px-4 py-3 text-slate-100 focus:outline-none focus:border-blue-500 text-center"
+              value={newCatIcon} 
+              maxLength={2}
+              onChange={e => setNewCatIcon(e.target.value)}
+            />
+            <input 
+              type="text" 
+              placeholder="輸入新分類名稱..." 
+              className="flex-1 min-w-0 bg-slate-900 border border-slate-600 rounded-xl px-3 sm:px-4 py-3 text-slate-100 focus:outline-none focus:border-blue-500"
+              value={newCatName} 
+              onChange={e => setNewCatName(e.target.value)}
+            />
+          </div>
           <button 
             type="submit" 
             disabled={loading || !newCatName.trim()}
-            className="bg-blue-600 hover:bg-blue-500 px-6 py-3 rounded-xl font-bold transition-all disabled:opacity-50 text-white"
+            className="bg-blue-600 hover:bg-blue-500 px-6 py-3 rounded-xl font-bold transition-all disabled:opacity-50 text-white w-full sm:w-auto"
           >
             {loading ? '處理中...' : '新增'}
           </button>
