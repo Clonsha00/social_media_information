@@ -66,8 +66,8 @@ export default function Settings() {
           <div className="flex gap-2 flex-1">
             <input 
               type="text" 
-              placeholder="圖示(🐶)" 
-              className="w-16 sm:w-24 bg-slate-900 border border-slate-600 rounded-xl px-2 sm:px-4 py-3 text-slate-100 focus:outline-none focus:border-blue-500 text-center"
+              placeholder="🐶" 
+              className="w-16 sm:w-20 bg-slate-900 border border-slate-600 rounded-xl px-2 sm:px-4 py-3 text-slate-100 focus:outline-none focus:border-blue-500 text-center text-xl"
               value={newCatIcon} 
               maxLength={2}
               onChange={e => setNewCatIcon(e.target.value)}
